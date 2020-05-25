@@ -1,7 +1,6 @@
-package ;
+package com.client.applicationGUI;
 
 import com.network.client.Account;
-import com.network.client.ClientServerPart;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,10 +24,10 @@ public class GUI {
         stage.setTitle("PRO_LABS");
         stage.setWidth(900);
         stage.setHeight(700);
-        InputStream iconStream = getClass().getClassLoader().getResourceAsStream("icon.png");
-        assert iconStream != null;
-        Image image = new Image(iconStream);
-        stage.getIcons().add(image);
+//        InputStream iconStream = getClass().getClassLoader().getResourceAsStream("icon.png");
+//        assert iconStream != null;
+//        Image image = new Image(iconStream);
+//        stage.getIcons().add(image);
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("GUIScene.fxml"));
         TabPane root = loader.load();
         GUIController.setInstance(loader.getController());

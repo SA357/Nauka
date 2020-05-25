@@ -1,10 +1,9 @@
-package com.network.client.applicationGUI;
+package com.client.applicationGUI;
 
+import com.client.applicationGUI.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.network.client.Account;
-import com.network.client.ClientServerPart;
-
 import java.net.InetSocketAddress;
 import java.util.Random;
 
@@ -26,14 +25,14 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Random random = new Random();
-        Account.setClientServerPartPort(random.nextInt(10000) + 6000);
-        Thread clientServerPart = new Thread(new ClientServerPart(Account.getClientServerPartPort()));
-        clientServerPart.start();
-        Registration registration = new Registration();
-        registration.init();
+//        Account.setClientServerPartPort(new Random().nextInt(10000) + 6000);
+//        Thread clientServerPart = new Thread(new ClientServerPart(Account.getClientServerPartPort()));
+//        clientServerPart.start();
+//        Registration registration = new Registration();
+//        registration.init();
         GUI gui = new GUI();
         gui.init();
-        Registration.getStage().show();
+        GUI.getStage().show();
+//        Registration.getStage().show();
     }
 }

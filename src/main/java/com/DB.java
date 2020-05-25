@@ -11,9 +11,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 
-import static com.network.message.Message.*;
 
-@SuppressWarnings("UnusedAssignment")
+
 public
 class DB {
 
@@ -80,7 +79,7 @@ class DB {
             stmt.setString(1, department);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                id.add(rs.getInt(1))
+                id.add(rs.getInt(1));
             }
         }
         return id;
@@ -108,40 +107,23 @@ class DB {
         return departments;
     }
 
+    public String  getEmployeesName(int id) throws SQLException{
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select name from Employee where id = ?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.getString(1);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public String  getEmployeesPosition(int id) throws SQLException{
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("select position from Employee where id = ?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.getString(1);
+        }
+    }
 
 
 
@@ -176,7 +158,7 @@ class DB {
             stmt.execute();
         }
     }
-    //TODO
+
     public void closeActiveSession(String player, String player2) throws SQLException{
 
     }
@@ -210,56 +192,56 @@ class DB {
         }
     }
 
-    public AdminQueryReplyMessage executeAdminQuery(AdminQueryMessage msg) throws SQLException { //работает только для одной строки LOG
-        try (Connection conn = getConnection()) {
-//            String needwords = "text like '%" + String.join("%' and text like %'", msg.getWords().split(",")) + "%'";
-//            System.out.println(needwords);
-            String query = "select name, date, text from LOG where 1";
-            if (!msg.getNameOfUser().equals("")) {
-                query += " and name = ?";
-            }
-            if (!msg.getWords().equals("")) {
-                query += " and text like ?";
-            }
-            if (msg.getDate() != null) {
-                query += " and date >= ?";
-            }
-            System.out.println(query);
-            PreparedStatement stmt = conn.prepareStatement(query);
-            int cnt = 1;
-            if (!msg.getNameOfUser().equals("")) {
-                stmt.setString(cnt++, msg.getNameOfUser());
-            }
-            if (!msg.getWords().equals("")) {
-                stmt.setString(cnt++, "%" + msg.getWords() + "%");
-            }
-            if (msg.getDate() != null) {
-                stmt.setDate(cnt++, msg.getDate());
-            }
-            ResultSet rs = stmt.executeQuery();
-            AdminQueryReplyMessage replyMessage = new AdminQueryReplyMessage();
-            while (rs.next())
-                replyMessage.getList().add(
-                        new AdminQueryReplyMessage.Entry(
-                                rs.getString(1), rs.getString(3), rs.getDate(2).toLocalDate().toString()
-                        )
-                );
-            return replyMessage;
-//            if(!msg.getNameOfUser().equals("")) {
-//                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where name = ? and date >= ? and "+needwords);
-////                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where " + needwords);
-//                stmt.setString(1, msg.getNameOfUser());
-//                stmt.setDate(2, msg.getDate());
-//                stmt.execute();
-//                ResultSet rs = stmt.getResultSet();
-//                return new QueryReaplyMessage(rs.getString(1), rs.getString(3), rs.getDate(2));
+//    public AdminQueryReplyMessage executeAdminQuery(AdminQueryMessage msg) throws SQLException { //работает только для одной строки LOG
+//        try (Connection conn = getConnection()) {
+////            String needwords = "text like '%" + String.join("%' and text like %'", msg.getWords().split(",")) + "%'";
+////            System.out.println(needwords);
+//            String query = "select name, date, text from LOG where 1";
+//            if (!msg.getNameOfUser().equals("")) {
+//                query += " and name = ?";
 //            }
-//            else {
-//                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where date >= ? and "+needwords);
-//                stmt.setDate(1, msg.getDate());
-//                stmt.execute();
-        }
-    }
+//            if (!msg.getWords().equals("")) {
+//                query += " and text like ?";
+//            }
+//            if (msg.getDate() != null) {
+//                query += " and date >= ?";
+//            }
+//            System.out.println(query);
+//            PreparedStatement stmt = conn.prepareStatement(query);
+//            int cnt = 1;
+//            if (!msg.getNameOfUser().equals("")) {
+//                stmt.setString(cnt++, msg.getNameOfUser());
+//            }
+//            if (!msg.getWords().equals("")) {
+//                stmt.setString(cnt++, "%" + msg.getWords() + "%");
+//            }
+//            if (msg.getDate() != null) {
+//                stmt.setDate(cnt++, msg.getDate());
+//            }
+//            ResultSet rs = stmt.executeQuery();
+//            AdminQueryReplyMessage replyMessage = new AdminQueryReplyMessage();
+//            while (rs.next())
+//                replyMessage.getList().add(
+//                        new AdminQueryReplyMessage.Entry(
+//                                rs.getString(1), rs.getString(3), rs.getDate(2).toLocalDate().toString()
+//                        )
+//                );
+//            return replyMessage;
+////            if(!msg.getNameOfUser().equals("")) {
+////                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where name = ? and date >= ? and "+needwords);
+//////                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where " + needwords);
+////                stmt.setString(1, msg.getNameOfUser());
+////                stmt.setDate(2, msg.getDate());
+////                stmt.execute();
+////                ResultSet rs = stmt.getResultSet();
+////                return new QueryReaplyMessage(rs.getString(1), rs.getString(3), rs.getDate(2));
+////            }
+////            else {
+////                PreparedStatement stmt = conn.prepareStatement("select name, date, text from LOG where date >= ? and "+needwords);
+////                stmt.setDate(1, msg.getDate());
+////                stmt.execute();
+//        }
+//    }
 
     boolean isAdmin(String name, String password) throws SQLException {
         try (Connection conn = getConnection()) {
@@ -311,7 +293,7 @@ class DB {
         }
     }
 
-    boolean checkClientActivness(String name) throws SQLException {
+    boolean checkClientActiveness(String name) throws SQLException {
         try (Connection conn = getConnection()) {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT EXISTS(SELECT name FROM ActiveClients WHERE name = '" + name + "')");
@@ -432,5 +414,4 @@ class DB {
         }
         return tableNames;
     }
-
 }

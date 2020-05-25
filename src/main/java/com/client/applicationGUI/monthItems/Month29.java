@@ -3,7 +3,7 @@ package com.client.applicationGUI.monthItems;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 
-public class Month29 extends Month28{
+public class Month29 {
     @FXML
     private SimpleStringProperty day29;
 
