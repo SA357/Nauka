@@ -1,0 +1,43 @@
+CREATE TABLE Department
+(
+  dep_name VARCHAR(64) NOT NULL,
+  PRIMARY KEY (dep_name)
+);
+
+CREATE TABLE Employee
+(
+  emp_id INT NOT NULL,
+  emp_name VARCHAR(64) NOT NULL,
+  emp_position VARCHAR(64) NOT NULL,
+  emp_surname VARCHAR(64) NOT NULL,
+  emp_patronymic VARCHAR NOT NULL,
+  is_remote boolean NOT NULL,
+  emp_address VARCHAR(64) NOT NULL,
+  dep_name VARCHAR(64) NOT NULL,
+  PRIMARY KEY (emp_id ),
+  FOREIGN KEY (dep_name) REFERENCES Department(dep_name)
+);
+
+CREATE TABLE Calendar
+(
+  date DATE NOT NULL,
+  date_type VARCHAR(8) NOT NULL,
+  PRIMARY KEY (date)
+);
+
+CREATE TABLE Mark
+(
+  mark_type VARCHAR(8) NOT NULL,
+  PRIMARY KEY (mark_type)
+);
+
+CREATE TABLE Emp_mark
+(
+  id SERIAL,
+  date DATE NOT NULL,
+  mark_type VARCHAR(8) NOT NULL,
+  emp_id INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (mark_type) REFERENCES Mark(mark_type),
+  FOREIGN KEY (emp_id) REFERENCES Employee(id)
+);

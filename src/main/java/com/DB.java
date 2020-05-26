@@ -13,59 +13,104 @@ import java.util.*;
 
 
 
-public
-class DB {
+public class DB {
+
+    final String[] mark_types = {"Я", "Н", "В", "Рв", "Б", "К", "ОТ", "До", "Хд", "У", "Ож"};
 
     private Connection getConnection() throws SQLException {
         String connStr = "jdbc:sqlite:DB.db";  //"jdbc:sqlite::memory:"
         return DriverManager.getConnection(connStr);
     }
 
-    //UPDATE clients set name = ?, password = ? where name = ?
-    void create() throws SQLException {
+    public void create() throws SQLException {
         try (Connection conn = getConnection()) {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("create table Clients ( name text, password text, date timestamp, isAdmin boolean )");
-            stmt.executeUpdate("create table ActiveClients ( name text, IP text, portServerPart int, date timestamp )");
-            stmt.executeUpdate("create table ActiveSessions ( id SERIAL, player1 text, player2 text, date timestamp )");
-            stmt.executeUpdate("create table LOG ( name text, date timestamp, text text )");
-            stmt.executeUpdate("create table Zakazi ( name text, date timestamp, weapon text, scope text, podstvolnik text, id SERIAL )");
+            executeLinesFromFile("sql.txt");
+            executeLinesFromFile("example.txt");
+            createCalendar();
+            createMarkTypes();
+            addRandomMarks();
+            //Statement stmt = conn.createStatement();
 
-            addClient("ADMIN", "111", Date.valueOf(LocalDate.now()), true);
-            addClient("Лариса Ивановна", "111", Date.valueOf(LocalDate.now()), false);
-            addClient("Штеренберг", "111", Date.valueOf(LocalDate.now()), false);
-            addClient("Бумбершнюк", "111", Date.valueOf(LocalDate.now()), false);
-            addClient("Бусыгин Константин Николаевич", "111", Date.valueOf(LocalDate.now()), true);
-            addClient("com", "com", Date.valueOf(LocalDate.now()), false);
+            //stmt.executeUpdate("create table Zakazi ( name text, date timestamp, weapon text, scope text, podstvolnik text, id SERIAL )");
+//            addUser("ADMIN", "111", Date.valueOf(LocalDate.now()), true);
+//            addUser("Бумбершнюк", "111", Date.valueOf(LocalDate.now()), false);
+//            addUser("Бусыгин Константин Николаевич", "111", Date.valueOf(LocalDate.now()), true);
         }
     }
 
+    private void createCalendar() throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("INSERT into Calendar(date, date_type) values (?, ?)");
+            for (int month = 1; month <= 12; month++) {
+                for (int day = 1; day <= 28; day++) {
+                    stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
+                    stmt.setString(2, "Р");
+                    stmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    private void createMarkTypes() throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("INSERT into Mark(mark_type) values (?)");
+            for (String mark : mark_types){
+                stmt.setString(1, mark);
+                stmt.executeUpdate();
+            }
+        }
+    }
+
+    private void addRandomMarks() throws SQLException {
+        Set<Integer> ids = getEmployeesIds();
+        Random random = new Random();
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("INSERT into Emp_mark(date, mark_type, emp_id) values (?, ?, ?)");
+            for(int id : ids){
+                for (int month = 1; month <= 12; month++) {
+                    for (int day = 1; day <= 28; day++) {
+                        stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
+                        stmt.setString(2, mark_types[random.nextInt(mark_types.length)]);
+                        stmt.setInt(3, id);
+                        stmt.executeUpdate();
+                    }
+                }
+            }
+        }
+    }
+
+    private Set<Integer> getEmployeesIds() throws SQLException {
+        Set<Integer> ids = new HashSet<>();
+        try (Connection conn = getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT emp_id from Employee");
+            while (rs.next()){
+                ids.add(rs.getInt(1));
+            }
+            return ids;
+        }
+    }
+
+
     /**
      * @return  Month - Set of day_types
-     *
      */
    public Map<Integer, Set<String>> getCalendar() throws SQLException {
        Map<Integer, Set<String>> map = new HashMap<>();
        try (Connection conn = getConnection()) {
            Statement stmt = conn.createStatement();
            ResultSet rs = stmt.executeQuery("select date, date_type from Calendar");
-           int month = rs.getDate(1).toLocalDate().getMonth().getValue();
-           if (month != 1) {
-               System.out.println(month);
-               throw new RuntimeException("Bad database structure " + month);
-           }
+           int month;
            while (rs.next()) {
                Date date = rs.getDate(1);
-               if (month != date.toLocalDate().getMonth().getValue())
-                   month++;
+               month = date.toLocalDate().getMonth().getValue();
                if (!map.containsKey(month)){
                    map.put(month, new HashSet<>());
                }
                String date_type = rs.getString(2);
                map.computeIfPresent(month, (k, v) -> {
-                   Set<String> set = new HashSet<>(v);
-                   set.add(date_type);
-                   return set;
+                   v.add(date_type);
+                   return v;
                });
            }
        }
@@ -75,7 +120,7 @@ class DB {
     public Set<Integer> getEmployeesId(String department) throws SQLException {
         Set<Integer> id = new HashSet<>();
         try (Connection conn = getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select id from Employee where dep_name = ?");
+            PreparedStatement stmt = conn.prepareStatement("select emp_id from Employee where dep_name = ?");
             stmt.setString(1, department);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -107,18 +152,18 @@ class DB {
         return departments;
     }
 
-    public String  getEmployeesName(int id) throws SQLException{
+    public String getEmployeesFullName(int id) throws SQLException{
         try (Connection conn = getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select name from Employee where id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select emp_surname, emp_name, emp_patronymic from Employee where emp_id = ?");
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
-            return rs.getString(1);
+            return rs.getString(1) + rs.getString(2) + rs.getString(3);
         }
     }
 
     public String  getEmployeesPosition(int id) throws SQLException{
         try (Connection conn = getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select position from Employee where id = ?");
+            PreparedStatement stmt = conn.prepareStatement("select emp_position from Employee where emp_id = ?");
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             return rs.getString(1);
@@ -127,9 +172,9 @@ class DB {
 
 
 
-    public void addClient(String name, String password, Date date, boolean isAdmin) throws SQLException {
+    public void addUser(String name, String password, Date date, boolean isAdmin) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("insert into Clients values(?, ?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into User values(?, ?, ?, ?)");
             stmt.setString(1, name);
             stmt.setString(2, password);
             stmt.setDate(3, date);
@@ -161,19 +206,6 @@ class DB {
 
     public void closeActiveSession(String player, String player2) throws SQLException{
 
-    }
-
-    public String getEnemyName(String player) throws SQLException{
-        try (Connection conn = getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("select player1, player2 from ActiveSessions where player1 = ? or player2 = ?");
-            stmt.setString(1, player);
-            stmt.setString(2, player);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.getString(1).equals(player)){
-                return rs.getString(2);
-            }
-            else return rs.getString(1);
-        }
     }
 
     void closeAllActiveSession() throws SQLException {
@@ -332,9 +364,9 @@ class DB {
         }
     }
 
-    void executeLinesFromFile() throws SQLException { // сканнер накапливает строку до ( ; )    и пропускать коменты ( - )
+    void executeLinesFromFile (String file) throws SQLException { // сканнер накапливает строку до ( ; )    и пропускать коменты ( - )
         try (Connection conn = getConnection()) {
-            Scanner scan = new Scanner(Paths.get("sett.txt"));//
+            Scanner scan = new Scanner(Paths.get(file));
             StringBuilder stringBuilder = new StringBuilder();
             while (scan.hasNextLine()) {
                 String line;

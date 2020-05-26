@@ -1,10 +1,15 @@
 package com.client.applicationGUI;
 
+import com.DB;
 import com.client.applicationGUI.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.network.client.Account;
+
+
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class ClientApp extends Application {
@@ -25,6 +30,11 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //Files.deleteIfExists(Paths.get("DB.db"));
+
+        if(!Files.exists(Paths.get("DB.db"))) {
+            new DB().create();
+        }
 //        Account.setClientServerPartPort(new Random().nextInt(10000) + 6000);
 //        Thread clientServerPart = new Thread(new ClientServerPart(Account.getClientServerPartPort()));
 //        clientServerPart.start();

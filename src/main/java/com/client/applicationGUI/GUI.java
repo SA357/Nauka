@@ -21,7 +21,7 @@ public class GUI {
 
     public void init() throws IOException {
         stage = new Stage();
-        stage.setTitle("PRO_LABS");
+        stage.setTitle("NAUKA");
         stage.setWidth(900);
         stage.setHeight(700);
 //        InputStream iconStream = getClass().getClassLoader().getResourceAsStream("icon.png");

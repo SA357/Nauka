@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ScrollPane?>
@@ -30,7 +31,10 @@
                         </TextArea>
                         <ScrollPane prefHeight="999.0" prefWidth="999.0">
                            <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0" />
+                              <VBox fx:id="buttonVBox" alignment="TOP_CENTER" prefHeight="522.0" prefWidth="267.0" spacing="3.0">
+                                 <padding>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </padding></VBox>
                            </content>
                         </ScrollPane>
                      </children>

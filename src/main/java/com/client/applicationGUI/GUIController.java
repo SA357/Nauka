@@ -1,8 +1,7 @@
 package com.client.applicationGUI;
 
 import com.DB;
-import com.client.applicationGUI.monthItems.*;
-import javafx.application.Platform;
+import com.client.applicationGUI.monthItems.Month28;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,15 +9,14 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetSocketAddress;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 class AdminTableItem {
     @FXML private SimpleStringProperty userName;
@@ -57,10 +55,11 @@ public class GUIController {
 //    @FXML private TextArea activeUsersCopy;
 //    @FXML private Tab adminTab;
     @FXML private TabPane monthsPane;
+    @FXML private VBox buttonVBox;
 //    private Tab[] tabs = {new Tab("Январь"), new Tab("Февраль"),  new Tab("Март"), new Tab("Апрель"),
 //            new Tab("Май"), new Tab("Июнь"), new Tab("Июль"), new Tab("Август"), new Tab("Сентябрь"),
 //            new Tab("Октябрь"), new Tab("Ноябрь"), new Tab("Декабрь")};
-    String[] months = {"Январь", "Февраль",  "Март", "Апрель",
+    String[] months = {null,"Январь", "Февраль",  "Март", "Апрель",
             "Май", "Июнь", "Июль", "Август", "Сентябрь",
             "Октябрь", "Ноябрь", "Декабрь"};
     private static GUIController instance;
@@ -81,6 +80,7 @@ public class GUIController {
             Set<String> departments = db.getDepartments();
             for (String department : departments) {
                 Button button = new Button(department);
+                button.setPrefSize(400, 50);
                 buttons.add(button);
                 button.setOnAction(event -> {
                     for (Button b : buttons) {
@@ -92,6 +92,7 @@ public class GUIController {
                     changeDepartment(button.getText());
                 });
             }
+            buttonVBox.getChildren().addAll(buttons);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -132,15 +133,15 @@ public class GUIController {
 
                 //
                 TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
+                nameColumn.setCellValueFactory(x -> x.getValue().nameProperty());
                 tableView.getColumns().add(nameColumn);
                 //
                 TableColumn<Month28, String> positionColumn = new TableColumn<>("Должность");
-                nameColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
+                positionColumn.setCellValueFactory(x -> x.getValue().positionProperty());
                 tableView.getColumns().add(positionColumn);
                 //
                 TableColumn<Month28, String> idColumn = new TableColumn<>("Табельный №");
-                nameColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+                idColumn.setCellValueFactory(x -> x.getValue().idProperty());
                 tableView.getColumns().add(idColumn);
                 //
 //                TableColumn<Month28, String> Column = new TableColumn<>(" ");
@@ -203,7 +204,7 @@ public class GUIController {
         for (int id : employeesId) {
 
             list.add(new Month28(
-                    db.getEmployeesName(id),
+                    db.getEmployeesFullName(id),
                     db.getEmployeesPosition(id),
                     String.valueOf(id),
                     db.getMark(id, new Date(LocalDate.now().getYear(), month, 1)),
