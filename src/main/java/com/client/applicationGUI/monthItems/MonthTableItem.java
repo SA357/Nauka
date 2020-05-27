@@ -144,7 +144,7 @@ public class MonthTableItem {
                 day16, day17, day18, day19, day20, day21, day22, day23, day24, day25, day26, day27, day28);
         this.day29 = new SimpleStringProperty(day29);
         this.day30 = new SimpleStringProperty(day30);
-        this.day31 = new SimpleStringProperty(day29);
+        this.day31 = new SimpleStringProperty(day31);
     }
 
     public String getDay29() {

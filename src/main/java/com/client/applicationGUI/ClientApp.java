@@ -10,7 +10,11 @@ import com.network.client.Account;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Random;
 
 public class ClientApp extends Application {
@@ -31,8 +35,12 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Files.deleteIfExists(Paths.get("DB.db"));
 
+//        ResultSet rs= DriverManager.getConnection("jdbc:sqlite:DB.db").createStatement().executeQuery("Select date from Calendar");
+//        while (rs.next()){
+//            System.out.println(rs.getDate(1));
+//        }
+       // Files.deleteIfExists(Paths.get("DB.db"));
         if(!Files.exists(Paths.get("DB.db"))) {
             new DB().create();
         }
@@ -41,10 +49,12 @@ public class ClientApp extends Application {
 //        clientServerPart.start();
 //        Registration registration = new Registration();
 //        registration.init();
-//        ResultSet rs=new DB().getConnection().createStatement().executeQuery("select * from Calendar");
+
+//        ResultSet rs= DriverManager.getConnection("jdbc:sqlite:DB.db").createStatement().executeQuery("Select date from Calendar");
 //        while (rs.next()){
-//            System.out.println(rs.getDate(1) + " " + rs.getString(2));
+//            System.out.println(rs.getDate(1));
 //        }
+
         GUI gui = new GUI();
         gui.init();
         GUI.getStage().show();

@@ -24,9 +24,9 @@ public class DB {
     }
 
     public void create() throws SQLException {
-        try (Connection conn = getConnection()) {
-            executeLinesFromFile("sql.txt");
-            executeLinesFromFile("example.txt");
+       // try (Connection conn = getConnection()) {
+            executeLinesFromFile("src/main/resources/sql/sql.txt");
+            executeLinesFromFile("src/main/resources/sql/example.txt");
             createCalendar();
             createMarkTypes();
             addRandomMarks();
@@ -36,19 +36,27 @@ public class DB {
 //            addUser("ADMIN", "111", Date.valueOf(LocalDate.now()), true);
 //            addUser("Бумбершнюк", "111", Date.valueOf(LocalDate.now()), false);
 //            addUser("Бусыгин Константин Николаевич", "111", Date.valueOf(LocalDate.now()), true);
-        }
+       //}
     }
 
     private void createCalendar() throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("INSERT into Calendar(date, date_type) values (?, ?)");
-            for (int month = 1; month <= 12; month++) {
-                for (int day = 1; day <= 28; day++) {
-                    stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
-                    stmt.setString(2, "Р");
-                    stmt.executeUpdate();
-                }
+            Date tempDate = new Date(120, 0, 1);
+            Date end = Date.valueOf(LocalDate.of(2021,1,1));
+            while (tempDate.getTime() < end.getTime()) {
+                stmt.setDate(1, tempDate);
+                stmt.setString(2, "Р");
+                stmt.executeUpdate();
+                tempDate = Date.valueOf(tempDate.toLocalDate().plusDays(1));
             }
+//            for (int month = 1; month <= 12; month++) {
+//                for (int day = 1; day <= 28; day++) {
+//                    stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
+//                    stmt.setString(2, "Р");
+//                    stmt.executeUpdate();
+//                }
+//            }
         }
     }
 
@@ -63,19 +71,29 @@ public class DB {
     }
 
     private void addRandomMarks() throws SQLException {
+        System.out.println("> addRandomMarks");
         Set<Integer> ids = getEmployeesIds();
         Random random = new Random();
         try (Connection conn = getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("INSERT into Emp_mark(date, mark_type, emp_id) values (?, ?, ?)");
             for(int id : ids){
-                for (int month = 1; month <= 12; month++) {
-                    for (int day = 1; day <= 28; day++) {
-                        stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
-                        stmt.setString(2, mark_types[random.nextInt(mark_types.length)]);
-                        stmt.setInt(3, id);
-                        stmt.executeUpdate();
-                    }
+                Date tempDate = new Date(LocalDate.now().getYear()-1900, 0, 1);
+                Date end = Date.valueOf(LocalDate.now());
+                while (tempDate.getTime() <= end.getTime()) {
+                    stmt.setDate(1, tempDate);
+                    stmt.setString(2, mark_types[random.nextInt(mark_types.length)]);
+                    stmt.setInt(3, id);
+                    stmt.executeUpdate();
+                    tempDate = Date.valueOf(tempDate.toLocalDate().plusDays(1));
                 }
+//                for (int month = 1; month <= LocalDate.now().getMonth().getValue(); month++) {
+//                    for (int day = 1; day <= 28; day++) {
+//                        stmt.setDate(1, new Date(LocalDate.now().getYear(), month, day));
+//                        stmt.setString(2, mark_types[random.nextInt(mark_types.length)]);
+//                        stmt.setInt(3, id);
+//                        stmt.executeUpdate();
+//                    }
+//                }
             }
         }
     }
@@ -95,27 +113,27 @@ public class DB {
     /**
      * @return  Month - Set of day_types
      */
-   public Map<Integer, List<String>> getCalendar() throws SQLException {
-       Map<Integer, List<String>> map = new HashMap<>();
-       try (Connection conn = getConnection()) {
-           Statement stmt = conn.createStatement();
-           ResultSet rs = stmt.executeQuery("select date, date_type from Calendar");
-           int month;
-           while (rs.next()) {
-               Date date = rs.getDate(1);
-               month = date.toLocalDate().getMonth().getValue();
-               if (!map.containsKey(month)){
-                   map.put(month, new ArrayList<>());
-               }
-               String date_type = rs.getString(2);
-               map.computeIfPresent(month, (k, v) -> {
-                   v.add(date_type);
-                   return v;
-               });
-           }
-       }
-       return map;
-   }
+    public Map<Integer, List<String>> getCalendar() throws SQLException {
+        Map<Integer, List<String>> map = new HashMap<>();
+        try (Connection conn = getConnection()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select date, date_type from Calendar");
+            int month;
+            while (rs.next()) {
+                Date date = rs.getDate(1);
+                month = date.toLocalDate().getMonth().getValue();
+                if (!map.containsKey(month)) {
+                    map.put(month, new ArrayList<>());
+                }
+                String date_type = rs.getString(2);
+                map.computeIfPresent(month, (k, v) -> {
+                    v.add(date_type);  //не упорядочено - переделоть
+                    return v;
+                });
+            }
+        }
+        return map;
+    }
 
     public Set<Integer> getEmployeesId(String department) throws SQLException {
         Set<Integer> id = new HashSet<>();

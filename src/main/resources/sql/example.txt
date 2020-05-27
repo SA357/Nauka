@@ -1,6 +1,7 @@
-INSERT into Department (dep_name) values ('первый департамент');
-INSERT into Department (dep_name) values ('второй департамент');
-INSERT into Department (dep_name) values ('третий департамент');
+INSERT INTO Department (dep_name) VALUES ('первый департамент');
+INSERT INTO Department (dep_name) VALUES ('второй департамент');
+INSERT INTO Department (dep_name) VALUES ('третий департамент');
 
-INSERT into Employee (emp_id, emp_name, emp_surname, emp_patronymic, emp_position, is_remote, emp_address, dep_name) values (111, 'Петя', 'Петров', 'Петрович', 'бухгалтер', 1, 'г. Москва', 'первый департамент');
-INSERT into Employee (emp_id, emp_name, emp_surname, emp_patronymic, emp_position, is_remote, emp_address, dep_name) values (222, 'Вася', 'Васин', 'Васильевич', 'программист', 0, 'г. Москва', 'второй департамент');
+INSERT INTO Employee (emp_id, emp_name, emp_surname, emp_patronymic, emp_position, is_remote, emp_address, dep_name) VALUES (111, 'Петя', 'Петров', 'Петрович', 'бухгалтер', 1, 'г. Москва', 'первый департамент');
+INSERT INTO Employee (emp_id, emp_name, emp_surname, emp_patronymic, emp_position, is_remote, emp_address, dep_name) VALUES (222, 'Вася', 'Васин', 'Васильевич', 'программист', 0, 'г. Москва', 'второй департамент');
+INSERT INTO Employee (emp_id, emp_name, emp_surname, emp_patronymic, emp_position, is_remote, emp_address, dep_name) VALUES (333, 'Иван', 'Иванович', 'Иванов', 'директор', 0, 'г. Москва', 'третий департамент');

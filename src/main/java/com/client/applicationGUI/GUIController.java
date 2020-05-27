@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -118,20 +119,10 @@ public class GUIController {
 
     private Node getTableView(Map<Integer, List<String>> map, int month, String department) throws SQLException {
         int amountOfDays = map.get(month).size();
-        switch (amountOfDays){
-            case 28:
-                return getMonth28TableView(month, department);
-            case 29:
-                return getMonth29TableView(month, department);
-            case 30:
-                return getMonth30TableView(month, department);
-            case 31:
-                return getMonth31TableView(month, department);
-            default: throw new RuntimeException("!!! " + amountOfDays);
-        }
+        return getMonthTableView(month, amountOfDays, department);
     }
 
-    private TableView<MonthTableItem> getMonth28TableView(int month, String department) throws SQLException {
+    private TableView<MonthTableItem> getMonthTableView(int month, int amountOfDays, String department) throws SQLException {
         TableView<MonthTableItem> tableView = new TableView<>();
         Set<Integer> employeesId = db.getEmployeesId(department);
         ObservableList<MonthTableItem> list = getObservableList(month, employeesId);
@@ -149,77 +140,36 @@ public class GUIController {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("emp_id"));
         tableView.getColumns().add(idColumn);
 
-        for (int i = 1; i <= 28; i++) {
+        for (int i = 1; i <= amountOfDays; i++) {
             TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(i));
             dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ i));
             tableView.getColumns().add(dayI);
         }
         TableColumn<MonthTableItem, String> summaryColumn = new TableColumn<>("Итого");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("summary"));
+        summaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary"));
         tableView.getColumns().add(summaryColumn);
-        return tableView;
-    }
-
-    private TableView<MonthTableItem> getMonth29TableView(int month, String department) throws SQLException {
-        TableView<MonthTableItem> tableView = getMonth28TableView(month, department);
-        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(29));
-        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 29));
-        tableView.getColumns().add(dayI);
-        return tableView;
-    }
-
-    private TableView<MonthTableItem> getMonth30TableView(int month, String department) throws SQLException {
-        TableView<MonthTableItem> tableView = getMonth29TableView(month, department);
-        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(30));
-        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 30));
-        tableView.getColumns().add(dayI);
-        return tableView;
-    }
-
-    private TableView<MonthTableItem> getMonth31TableView(int month, String department) throws SQLException {
-        TableView<MonthTableItem> tableView = getMonth28TableView(month, department);
-        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(31));
-        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 31));
-        tableView.getColumns().add(dayI);
         return tableView;
     }
 
     private ObservableList<MonthTableItem> getObservableList(int month, Set<Integer> employeesId) throws SQLException {
         ObservableList<MonthTableItem> list = FXCollections.observableArrayList();
         for (int id : employeesId) {
+            String[] marks = new String[31];
 
-            list.add(new MonthTableItem(
-                    db.getEmployeesFullName(id),
-                    db.getEmployeesPosition(id),
-                    String.valueOf(id),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 1)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 2)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 3)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 4)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 5)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 6)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 7)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 8)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 9)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 10)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 11)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 12)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 13)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 14)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 15)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 16)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 17)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 18)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 19)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 20)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 21)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 22)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 23)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 24)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 25)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 26)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 27)),
-                    db.getMark(id, new Date(LocalDate.now().getYear(), month, 28))
+            try {
+                for (int i = 0; i < 31; i++) {
+                    marks[i]= db.getMark(id, Date.valueOf(LocalDate.of(LocalDate.now().getYear(), month, i+1)));
+                }
+            }
+            catch (SQLException | DateTimeException e) {
+                //
+            }
+
+            list.add(new MonthTableItem(db.getEmployeesFullName(id), db.getEmployeesPosition(id), String.valueOf(id),
+                    marks[0], marks[1], marks[2], marks[3], marks[4], marks[5], marks[6], marks[7], marks[8], marks[9],
+                    marks[10], marks[11], marks[12], marks[13], marks[14], marks[15], marks[16], marks[17], marks[18],
+                    marks[19], marks[20], marks[21], marks[22], marks[23], marks[24], marks[25], marks[26], marks[27],
+                    marks[28], marks[29], marks[30]
             ));
         }
         return list;
