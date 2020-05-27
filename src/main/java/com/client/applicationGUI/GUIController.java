@@ -1,7 +1,7 @@
 package com.client.applicationGUI;
 
 import com.DB;
-import com.client.applicationGUI.monthItems.Month28;
+import com.client.applicationGUI.monthItems.MonthTableItem;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +15,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class GUIController {
 //    private Tab[] tabs = {new Tab("Январь"), new Tab("Февраль"),  new Tab("Март"), new Tab("Апрель"),
 //            new Tab("Май"), new Tab("Июнь"), new Tab("Июль"), new Tab("Август"), new Tab("Сентябрь"),
 //            new Tab("Октябрь"), new Tab("Ноябрь"), new Tab("Декабрь")};
-    String[] months = {null,"Январь", "Февраль",  "Март", "Апрель",
+    String[] months = {null, "Январь", "Февраль",  "Март", "Апрель",
             "Май", "Июнь", "Июль", "Август", "Сентябрь",
             "Октябрь", "Ноябрь", "Декабрь"};
     private static GUIController instance;
@@ -88,30 +89,23 @@ public class GUIController {
                             b.getStylesheets().clear();
                         }
                     }
-                    button.getStylesheets().add("green_button.css");
+                    button.getStylesheets().add("css/green_button.css");
                     changeDepartment(button.getText());
                 });
             }
             buttonVBox.getChildren().addAll(buttons);
+
+            Button b = ((Button)buttons.toArray()[0]);
+            b.fire();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
-//    private void tableInitialize(){
-//
-//        for (Tab tab: tabPane.getTabs()) {
-//            tab.getContent().
-//        }
-//
-//
-//        TableColumn employeeName = ;
-//    }
-
     @FXML private void changeDepartment(String department) {
         try {
-            Map<Integer, Set<String>> map = db.getCalendar();
+            Map<Integer, List<String>> map = db.getCalendar();
+            monthsPane.getTabs().clear();
             for (int month : map.keySet()) {
                 Node tableView = getTableView(map, month, department);
                 Tab tab = new Tab(months[month], tableView);
@@ -122,88 +116,79 @@ public class GUIController {
         }
     }
 
-    private Node getTableView(Map<Integer, Set<String>> map, int month, String department) throws SQLException {
+    private Node getTableView(Map<Integer, List<String>> map, int month, String department) throws SQLException {
         int amountOfDays = map.get(month).size();
-//        switch (amountOfDays){
-//            case 28:
-                TableView<Month28> tableView = new TableView<>();
-                Set<Integer> employeesId = db.getEmployeesId(department);
-                ObservableList<Month28> list = getObservableList(month, employeesId);;  //getObservableList(map, month, department);
-                tableView.setItems(list);
-
-                //
-                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-                nameColumn.setCellValueFactory(x -> x.getValue().nameProperty());
-                tableView.getColumns().add(nameColumn);
-                //
-                TableColumn<Month28, String> positionColumn = new TableColumn<>("Должность");
-                positionColumn.setCellValueFactory(x -> x.getValue().positionProperty());
-                tableView.getColumns().add(positionColumn);
-                //
-                TableColumn<Month28, String> idColumn = new TableColumn<>("Табельный №");
-                idColumn.setCellValueFactory(x -> x.getValue().idProperty());
-                tableView.getColumns().add(idColumn);
-                //
-//                TableColumn<Month28, String> Column = new TableColumn<>(" ");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>(" ")); ///todo проверить
-//                tableView.getColumns().add(Column);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-//                //
-//                TableColumn<Month28, String> nameColumn = new TableColumn<>("Имя");
-//                nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); ///todo проверить
-//                tableView.getColumns().add(nameColumn);
-
-                return tableView;
-//            case 29:
-//                return new TableView<Month29>();
-//            case 30:
-//                return new TableView<Month30>();
-//            case 31:
-//                return new TableView<Month31>();
-//            default: throw new RuntimeException();
-     //   }
+        switch (amountOfDays){
+            case 28:
+                return getMonth28TableView(month, department);
+            case 29:
+                return getMonth29TableView(month, department);
+            case 30:
+                return getMonth30TableView(month, department);
+            case 31:
+                return getMonth31TableView(month, department);
+            default: throw new RuntimeException("!!! " + amountOfDays);
+        }
     }
 
-    private ObservableList<Month28> getObservableList(int month, Set<Integer> employeesId) throws SQLException {
-        ObservableList<Month28> list = FXCollections.observableArrayList();
+    private TableView<MonthTableItem> getMonth28TableView(int month, String department) throws SQLException {
+        TableView<MonthTableItem> tableView = new TableView<>();
+        Set<Integer> employeesId = db.getEmployeesId(department);
+        ObservableList<MonthTableItem> list = getObservableList(month, employeesId);
+        tableView.setItems(list);
+
+        TableColumn<MonthTableItem, String> nameColumn = new TableColumn<>("Имя");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("emp_name"));
+        tableView.getColumns().add(nameColumn);
+
+        TableColumn<MonthTableItem, String> positionColumn = new TableColumn<>("Должность");
+        positionColumn.setCellValueFactory(new PropertyValueFactory<>("emp_position"));
+        tableView.getColumns().add(positionColumn);
+
+        TableColumn<MonthTableItem, String> idColumn = new TableColumn<>("Табельный №");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("emp_id"));
+        tableView.getColumns().add(idColumn);
+
+        for (int i = 1; i <= 28; i++) {
+            TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(i));
+            dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ i));
+            tableView.getColumns().add(dayI);
+        }
+        TableColumn<MonthTableItem, String> summaryColumn = new TableColumn<>("Итого");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("summary"));
+        tableView.getColumns().add(summaryColumn);
+        return tableView;
+    }
+
+    private TableView<MonthTableItem> getMonth29TableView(int month, String department) throws SQLException {
+        TableView<MonthTableItem> tableView = getMonth28TableView(month, department);
+        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(29));
+        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 29));
+        tableView.getColumns().add(dayI);
+        return tableView;
+    }
+
+    private TableView<MonthTableItem> getMonth30TableView(int month, String department) throws SQLException {
+        TableView<MonthTableItem> tableView = getMonth29TableView(month, department);
+        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(30));
+        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 30));
+        tableView.getColumns().add(dayI);
+        return tableView;
+    }
+
+    private TableView<MonthTableItem> getMonth31TableView(int month, String department) throws SQLException {
+        TableView<MonthTableItem> tableView = getMonth28TableView(month, department);
+        TableColumn<MonthTableItem, String> dayI = new TableColumn<>(String.valueOf(31));
+        dayI.setCellValueFactory(new PropertyValueFactory<>("day"+ 31));
+        tableView.getColumns().add(dayI);
+        return tableView;
+    }
+
+    private ObservableList<MonthTableItem> getObservableList(int month, Set<Integer> employeesId) throws SQLException {
+        ObservableList<MonthTableItem> list = FXCollections.observableArrayList();
         for (int id : employeesId) {
 
-            list.add(new Month28(
+            list.add(new MonthTableItem(
                     db.getEmployeesFullName(id),
                     db.getEmployeesPosition(id),
                     String.valueOf(id),

@@ -1,5 +1,6 @@
 package com;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -91,12 +92,11 @@ public class DB {
         }
     }
 
-
     /**
      * @return  Month - Set of day_types
      */
-   public Map<Integer, Set<String>> getCalendar() throws SQLException {
-       Map<Integer, Set<String>> map = new HashMap<>();
+   public Map<Integer, List<String>> getCalendar() throws SQLException {
+       Map<Integer, List<String>> map = new HashMap<>();
        try (Connection conn = getConnection()) {
            Statement stmt = conn.createStatement();
            ResultSet rs = stmt.executeQuery("select date, date_type from Calendar");
@@ -105,7 +105,7 @@ public class DB {
                Date date = rs.getDate(1);
                month = date.toLocalDate().getMonth().getValue();
                if (!map.containsKey(month)){
-                   map.put(month, new HashSet<>());
+                   map.put(month, new ArrayList<>());
                }
                String date_type = rs.getString(2);
                map.computeIfPresent(month, (k, v) -> {
@@ -157,7 +157,7 @@ public class DB {
             PreparedStatement stmt = conn.prepareStatement("select emp_surname, emp_name, emp_patronymic from Employee where emp_id = ?");
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
-            return rs.getString(1) + rs.getString(2) + rs.getString(3);
+            return  String.join(" ",  rs.getString(1), rs.getString(2), rs.getString(3));
         }
     }
 

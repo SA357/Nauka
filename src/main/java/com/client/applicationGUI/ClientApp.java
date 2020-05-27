@@ -10,6 +10,7 @@ import com.network.client.Account;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
 import java.util.Random;
 
 public class ClientApp extends Application {
@@ -40,6 +41,10 @@ public class ClientApp extends Application {
 //        clientServerPart.start();
 //        Registration registration = new Registration();
 //        registration.init();
+//        ResultSet rs=new DB().getConnection().createStatement().executeQuery("select * from Calendar");
+//        while (rs.next()){
+//            System.out.println(rs.getDate(1) + " " + rs.getString(2));
+//        }
         GUI gui = new GUI();
         gui.init();
         GUI.getStage().show();

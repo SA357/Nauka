@@ -3,13 +3,13 @@ package com.client.applicationGUI.monthItems;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 
-public class Month28 {
+public class MonthTableItem {
     @FXML
-    private SimpleStringProperty name;
+    private SimpleStringProperty emp_name;
     @FXML
-    private SimpleStringProperty position;
+    private SimpleStringProperty emp_position;
     @FXML
-    private SimpleStringProperty id;
+    private SimpleStringProperty emp_id;
     @FXML
     private SimpleStringProperty summary;
 
@@ -69,11 +69,21 @@ public class Month28 {
     private SimpleStringProperty day27;
     @FXML
     private SimpleStringProperty day28;
-//String summary,
-    public Month28(String name, String position, String id, String day1, String day2, String day3, String day4, String day5, String day6, String day7, String day8, String day9, String day10, String day11, String day12, String day13, String day14, String day15, String day16, String day17, String day18, String day19, String day20, String day21, String day22, String day23, String day24, String day25, String day26, String day27, String day28) {
-        this.name = new SimpleStringProperty(name);
-        this.position = new SimpleStringProperty(position);
-        this.id = new SimpleStringProperty(id);
+    @FXML
+    private SimpleStringProperty day29;
+    @FXML
+    private SimpleStringProperty day30;
+    @FXML
+    private SimpleStringProperty day31;
+
+    //String summary,
+    public MonthTableItem(String name, String position, String emp_id, String day1, String day2, String day3, String day4, String day5,
+                          String day6, String day7, String day8, String day9, String day10, String day11, String day12, String day13,
+                          String day14, String day15, String day16, String day17, String day18, String day19, String day20, String day21,
+                          String day22, String day23, String day24, String day25, String day26, String day27, String day28) {
+        this.emp_name = new SimpleStringProperty(name);
+        this.emp_position = new SimpleStringProperty(position);
+        this.emp_id = new SimpleStringProperty(emp_id);
         //this.summary = new SimpleStringProperty(summary);
         this.day1 = new SimpleStringProperty(day1);
         this.day2 = new SimpleStringProperty(day2);
@@ -104,29 +114,85 @@ public class Month28 {
         this.day27 = new SimpleStringProperty(day27);
         this.day28 = new SimpleStringProperty(day28);
     }
-
-    public String getName() {
-        return name.get();
+    //String summary,
+    public MonthTableItem(String name, String position, String emp_id, String day1, String day2, String day3, String day4, String day5,
+                          String day6, String day7, String day8, String day9, String day10, String day11, String day12, String day13,
+                          String day14, String day15, String day16, String day17, String day18, String day19, String day20, String day21,
+                          String day22, String day23, String day24, String day25, String day26, String day27, String day28, String day29) {
+        this(name, position, emp_id, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13, day14, day15,
+                day16, day17, day18, day19, day20, day21, day22, day23, day24, day25, day26, day27, day28);
+        this.day29 = new SimpleStringProperty(day29);
+    }
+    //String summary,
+    public MonthTableItem(String name, String position, String emp_id, String day1, String day2, String day3, String day4, String day5,
+                          String day6, String day7, String day8, String day9, String day10, String day11, String day12, String day13,
+                          String day14, String day15, String day16, String day17, String day18, String day19, String day20, String day21,
+                          String day22, String day23, String day24, String day25, String day26, String day27, String day28, String day29,
+                          String day30) {
+        this(name, position, emp_id, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13, day14, day15,
+                day16, day17, day18, day19, day20, day21, day22, day23, day24, day25, day26, day27, day28);
+        this.day29 = new SimpleStringProperty(day29);
+        this.day30 = new SimpleStringProperty(day30);
+    }
+    //String summary,
+    public MonthTableItem(String name, String position, String emp_id, String day1, String day2, String day3, String day4, String day5,
+                          String day6, String day7, String day8, String day9, String day10, String day11, String day12, String day13,
+                          String day14, String day15, String day16, String day17, String day18, String day19, String day20, String day21,
+                          String day22, String day23, String day24, String day25, String day26, String day27, String day28, String day29,
+                          String day30, String day31) {
+        this(name, position, emp_id, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13, day14, day15,
+                day16, day17, day18, day19, day20, day21, day22, day23, day24, day25, day26, day27, day28);
+        this.day29 = new SimpleStringProperty(day29);
+        this.day30 = new SimpleStringProperty(day30);
+        this.day31 = new SimpleStringProperty(day29);
     }
 
-    public SimpleStringProperty nameProperty() {
-        return name;
+    public String getDay29() {
+        return day29.get();
     }
 
-    public String getPosition() {
-        return position.get();
+    public SimpleStringProperty day29Property() {
+        return day29;
     }
 
-    public SimpleStringProperty positionProperty() {
-        return position;
+    public String getDay30() {
+        return day30.get();
     }
 
-    public String getId() {
-        return id.get();
+    public SimpleStringProperty day30Property() {
+        return day30;
     }
 
-    public SimpleStringProperty idProperty() {
-        return id;
+    public String getDay31() {
+        return day31.get();
+    }
+
+    public SimpleStringProperty day31Property() {
+        return day31;
+    }
+
+    public String getEmp_name() {
+        return emp_name.get();
+    }
+
+    public SimpleStringProperty emp_nameProperty() {
+        return emp_name;
+    }
+
+    public String getEmp_position() {
+        return emp_position.get();
+    }
+
+    public SimpleStringProperty emp_positionProperty() {
+        return emp_position;
+    }
+
+    public String getEmp_id() {
+        return emp_id.get();
+    }
+
+    public SimpleStringProperty emp_idProperty() {
+        return emp_id;
     }
 
     public String getSummary() {
