@@ -1,4 +1,4 @@
-package com.client.applicationGUI.monthItems;
+package com.client.applicationGUI;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;

@@ -1,7 +1,6 @@
 package com.client.applicationGUI;
 
 import com.DB;
-import com.client.applicationGUI.monthItems.MonthTableItem;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
